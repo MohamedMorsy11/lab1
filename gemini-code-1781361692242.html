@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>لايف لاب | مختبرات الرعاية الطبية الذكية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ===================================================
+   DESIGN TOKENS (الباقة اللونية الفاخرة للمعمل)
+   =================================================== */
+:root {
+  --navy-dark:   #070F1E;
+  --navy-mid:    #0B192C;
+  --navy-light:  #1E2E44;
+  --mint:        #00D2C4;
+  --mint-glow:   rgba(0, 210, 196, 0.15);
+  --mint-dim:    rgba(0, 210, 196, 0.35);
+  --alabaster:   #F8FAFC;
+  --slate:       #64748B;
+  --white:       #FFFFFF;
+  --coral-warning: #FF6B6B;
+}
+
+/* ===================================================
+   RESET & BASE
+   =================================================== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--navy-dark);
+  color: var(--alabaster);
+  font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+
+/* ===================================================
+   DYNAMIC LANGUAGE SWITCHER
+   =================================================== */
+.ar { font-family: 'Cairo', sans-serif; direction: rtl; display: block; }
+.en { font-family: 'Plus Jakarta Sans', sans-serif; direction: ltr; display: block; }
+span.ar { display: inline-block; }
+span.en { display: inline-block; }
+
+body[data-lang="en"] .ar { display: none !important; }
+body[data-lang="ar"] .en { display: none !important; }
+
+/* أزرار التحكم العائمة المحدثة للموبايل */
+.fixed-controls {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 9999;
+  display: flex;
+  gap: 10px;
+}
+body[data-lang="en"] .fixed-controls { left: auto; right: 20px; flex-direction: row-reverse; }
+
+.control-btn {
+  background: var(--navy-mid);
+  border: 1px solid var(--mint);
+  color: var(--mint);
+  padding: 10px 18px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.control-btn:hover {
+  background: var(--mint);
+  color: var(--navy-dark);
+  box-shadow: 0 0 15px var(--mint);
+  transform: translateY(-2px);
+}
+
+/* ===================================================
+   LAYOUT UTILITIES
+   =================================================== */
+.container {
+  width: 100%;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.section-padding { padding: clamp(4rem, 8vw, 7rem) 0; }
+.text-center { text-align: center; }
+
+.section-badge {
+  display: inline-block;
+  background: var(--mint-glow);
+  color: var(--mint);
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(0, 210, 196, 0.2);
+}
+.section-title {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 1rem;
+}
+.section-subtitle {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: var(--slate);
+  max-width: 600px;
+  margin: 0 auto 3.5rem;
+  line-height: 1.6;
+}
+
+.btn-group {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn {
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-primary { background: var(--mint); color: var(--navy-dark); border: none; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 25px var(--mint-dim); }
+.btn-secondary { background: transparent; color: var(--white); border: 1px solid var(--navy-light); }
+.btn-secondary:hover { background: var(--navy-light); border-color: var(--mint); }
+
+/* ===================================================
+   HERO SECTION
+   =================================================== */
+#hero {
+  position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  padding-top: 80px;
+  overflow: hidden;
+}
+.hero-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 80% 20%, rgba(0, 210, 196, 0.08), transparent 45%),
+              linear-gradient(180deg, rgba(7,15,30,0.5) 0%, var(--navy-dark) 100%);
+  z-index: 1;
+}
+.hero-content { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; }
+.hero-title {
+  font-size: clamp(2.3rem, 6vw, 4.2rem);
+  font-weight: 900;
+  line-height: 1.2;
+  color: var(--white);
+  margin-bottom: 1.5rem;
+}
+.hero-title span { color: var(--mint); }
+
+/* ===================================================
+   PACKAGES SECTION
+   =================================================== */
+#packages { background: var(--navy-mid); }
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+.package-card {
+  background: linear-gradient(145deg, rgba(11,25,44,0.6) 0%, rgba(7,15,30,0.8) 100%);
+  border: 1px solid rgba(0, 210, 196, 0.15);
+  border-radius: 12px;
+  padding: 35px 25px;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(.25,.8,.25,1);
+}
+.package-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--mint);
+  box-shadow: 0 20px 40px var(--mint-glow);
+}
+.package-badge {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  background: var(--mint);
+  color: var(--navy-dark);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+body[data-lang="en"] .package-badge { left: auto; right: 20px; }
+.package-icon { font-size: 2.5rem; margin-bottom: 1.5rem; display: block; }
+.package-name { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--white); }
+.package-price { font-size: 1.8rem; font-weight: 800; color: var(--mint); margin-bottom: 1.5rem; }
+.package-features { list-style: none; margin-bottom: 2rem; }
+.package-features li { margin-bottom: 0.6rem; color: #94A3B8; font-size: 0.95rem; }
+.package-features li::before { content: "✦ "; color: var(--mint); margin-left: 5px; }
+body[data-lang="en"] .package-features li::before { margin-left: 0; margin-right: 5px; }
+
+/* ===================================================
+   SMART TESTS DIRECTORY SECTION
+   =================================================== */
+#directory { background: var(--navy-dark); position: relative; }
+.directory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+}
+.directory-card {
+  background: var(--navy-mid);
+  border: 1px solid rgba(255,255,255,0.03);
+  border-radius: 10px;
+  padding: 30px;
+  transition: all 0.3s ease;
+}
+.directory-card:hover {
+  border-color: rgba(0, 210, 196, 0.25);
+  box-shadow: inset 0 0 15px rgba(0, 210, 196, 0.05);
+}
+.dir-test-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--navy-light);
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+.dir-test-title { font-size: 1.3rem; font-weight: 700; color: var(--white); }
+.dir-test-code { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.8rem; background: var(--navy-light); color: var(--mint); padding: 4px 10px; border-radius: 4px; font-weight: 700; }
+
+.dir-meta-block { margin-bottom: 18px; }
+.dir-meta-label { font-size: 0.85rem; font-weight: 700; color: var(--mint); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+body[data-lang="ar"] .dir-meta-label { text-align: right; }
+.dir-meta-desc { font-size: 0.95rem; color: #94A3B8; line-height: 1.5; }
+body[data-lang="ar"] .dir-meta-desc { text-align: right; }
+
+.dir-condition-box {
+  background: rgba(7, 15, 30, 0.4);
+  border-right: 3px solid var(--mint);
+  padding: 12px 15px;
+  border-radius: 0 4px 4px 0;
+  margin-top: 5px;
+}
+body[data-lang="ar"] .dir-condition-box { border-right: none; border-left: 3px solid var(--mint); border-radius: 4px 0 0 4px; }
+.dir-condition-box.warning { border-color: var(--coral-warning); }
+.dir-condition-box.warning .dir-meta-label { color: var(--coral-warning); }
+
+/* ===================================================
+   HOME VISIT SECTION
+   =================================================== */
+#home-visit { background: var(--navy-mid); position: relative; }
+.visit-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 50px;
+  align-items: center;
+}
+@media (min-width: 850px) { .visit-wrapper { grid-template-columns: 1.1fr 0.9fr; } }
+
+.visit-info .info-item {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 1.5rem;
+  align-items: flex-start;
+}
+.info-icon {
+  background: var(--mint-glow);
+  color: var(--mint);
+  width: 45px; height: 45px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; flex-shrink: 0; font-weight: 700;
+}
+.info-text strong { color: var(--white); font-size: 1.1rem; display: block; margin-bottom: 0.2rem; }
+.info-text p { color: var(--slate); font-size: 0.95rem; }
+
+.visit-card-form {
+  background: var(--navy-dark);
+  border: 1px solid var(--navy-light);
+  padding: 35px 25px;
+  border-radius: 12px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+.form-group { margin-bottom: 1.2rem; }
+.form-label { display: block; font-size: 0.9rem; color: var(--slate); margin-bottom: 0.5rem; font-weight: 600; }
+body[data-lang="ar"] .form-label { text-align: right; }
+.form-control {
+  width: 100%;
+  background: var(--navy-mid);
+  border: 1px solid var(--navy-light);
+  border-radius: 6px;
+  padding: 12px 16px;
+  color: var(--alabaster);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+body[data-lang="ar"] .form-control { direction: rtl; text-align: right; }
+.form-control:focus { border-color: var(--mint); background: rgba(0,210,196,0.02); }
+
+/* ===================================================
+   INFINITE TICKER MARQUEE SECTION
+   =================================================== */
+#insurances {
+  background: var(--navy-mid);
+  border-top: 1px solid rgba(255,255,255,0.03);
+  border-bottom: 1px solid var(--navy-light);
+  padding: 2.5rem 0;
+  overflow: hidden;
+  position: relative;
+}
+
+#insurances::before, #insurances::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 120px; z-index: 5; pointer-events: none;
+}
+#insurances::before { left: 0; background: linear-gradient(to right, var(--navy-mid), transparent); }
+#insurances::after { right: 0; background: linear-gradient(to left, var(--navy-mid), transparent); }
+
+.marquee-container { overflow: hidden; width: 100%; direction: ltr !important; }
+.marquee-track { display: flex; align-items: center; gap: 5rem; width: max-content; animation: scrollMarquee 25s linear infinite; }
+
+.logo-item { display: flex; align-items: center; gap: 12px; font-size: 1.1rem; font-weight: 700; color: var(--slate); opacity: 0.65; transition: opacity 0.3s ease; user-select: none; }
+.logo-item:hover { opacity: 1; color: var(--white); }
+.logo-icon-svg { width: 28px; height: 28px; fill: currentColor; color: var(--mint); }
+
+@keyframes scrollMarquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+footer { background: var(--navy-dark); padding: 2.5rem 0; text-align: center; color: var(--slate); font-size: 0.9rem; }
+footer strong { color: var(--white); }
+</style>
+</head>
+<body data-lang="ar">
+
+<!-- أزرار التحكم العائمة والمحسنة بالكامل -->
+<div class="fixed-controls">
+  <button id="lang-btn" class="control-btn" aria-label="Toggle Language">English</button>
+  <button id="pdf-btn" class="control-btn" aria-label="Download Price PDF">
+    <span class="ar">📄 تحميل الأسعار PDF</span>
+    <span class="en">📄 Download Price PDF</span>
+  </button>
+</div>
+
+<!-- ===================================================
+     HERO SECTION
+     =================================================== -->
+<section id="hero">
+  <div class="hero-bg-overlay"></div>
+  <div class="container text-center">
+    <div class="hero-content">
+      <span class="section-badge reveal">
+        <span class="ar">مختبرات لايف LAB الرقمية</span>
+        <span class="en">LifeLab Digital Laboratories</span>
+      </span>
+      <h1 class="hero-title reveal rd1">
+        <span class="ar">رعايتك الطبية بدقة رقمية.. <span>في المعمل أو في بيتك</span></span>
+        <span class="en">Your Medical Care with Digital Precision.. <span>At the Lab or at Home</span></span>
+      </h1>
+      <p class="section-subtitle reveal rd2" style="color: #94A3B8;">
+        <span class="ar">نحن ندمج بين كفاءة التحليل المخبري المؤتمت بالكامل، وبين راحتك المطلقة من خلال زيارات منزلية مجانية وباقات فحص وقائي متكاملة.</span>
+        <span class="en">We combine the efficiency of fully automated laboratory analysis with absolute comfort through free home visits and comprehensive preventative check-up packages.</span>
+      </p>
+      <div class="btn-group reveal rd3">
+        <a href="#home-visit" class="btn btn-primary">
+          <span class="ar">احجز زيارة منزلية الآن</span>
+          <span class="en">Book a Home Visit Now</span>
+        </a>
+        <a href="#packages" class="btn btn-secondary">
+          <span class="ar">استكشف باقات الفحص الشامل</span>
+          <span class="en">Explore Full Check-up Packages</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================
+     PACKAGES SECTION
+     =================================================== -->
+<section id="packages" class="section-padding">
+  <div class="container">
+    <div class="section-header text-center reveal">
+      <span class="section-badge">
+        <span class="ar">الوقاية الدورية</span>
+        <span class="en">Preventative Care</span>
+      </span>
+      <h2 class="section-title">
+        <span class="ar">باقات الفحص الشامل السنوية</span>
+        <span class="en">Annual Comprehensive Packages</span>
+      </h2>
+      <p class="section-subtitle">
+        <span class="ar">اطمئن على صحتك وصحة عائلتك دورياً من خلال باقات تحاليل منسقة بعناية بأعلى دقة وأفضل سعر.</span>
+        <span class="en">Monitor your health and your family's health periodically through carefully curated packages at the highest accuracy and best price.</span>
+      </p>
+    </div>
+
+    <div class="packages-grid">
+      <div class="package-card reveal rd1">
+        <span class="package-badge"><span class="ar">الأكثر طلباً</span><span class="en">Popular</span></span>
+        <span class="package-icon">🩺</span>
+        <h3 class="package-name"><span class="ar">باقة الاطمئنان الشامل</span><span class="en">Executive Check-up</span></h3>
+        <p class="package-price"><span class="ar">٩٩٠ ج.م</span><span class="en">990 EGP</span></p>
+        <ul class="package-features">
+          <li><span class="ar">صورة دم كاملة (CBC)</span><span class="en">Complete Blood Count</span></li>
+          <li><span class="ar">تحليل وظائف الكبد والكلى</span><span class="en">Liver & Kidney Functions</span></li>
+          <li><span class="ar">تحليل السكر التراكمي والكوليسترول</span><span class="en">HbA1c & Lipid Profile</span></li>
+        </ul>
+        <a href="#home-visit" class="btn btn-secondary" style="width:100%"><span class="ar">احجز الباقة الآن</span><span class="en">Book Package</span></a>
+      </div>
+
+      <div class="package-card reveal rd2">
+        <span class="package-icon">🌸</span>
+        <h3 class="package-name"><span class="ar">باقة صحة المرأة</span><span class="en">Women's Health</span></h3>
+        <p class="package-price"><span class="ar">١,٤٥٠ ج.م</span><span class="en">1,450 EGP</span></p>
+        <ul class="package-features">
+          <li><span class="ar">جميع تحاليل الفحص الشامل الأساسي</span><span class="en">All Basic Check-up Tests</span></li>
+          <li><span class="ar">تحليل هرمونات الغدة الدرقية</span><span class="en">Thyroid Hormones (TSH)</span></li>
+          <li><span class="ar">تحليل فيتامين د ومخزون الحديد</span><span class="en">Vitamin D & Ferritin</span></li>
+        </ul>
+        <a href="#home-visit" class="btn btn-secondary" style="width:100%"><span class="ar">احجز الباقة الآن</span><span class="en">Book Package</span></a>
+      </div>
+
+      <div class="package-card reveal rd3">
+        <span class="package-icon">🧸</span>
+        <h3 class="package-name"><span class="ar">باقة نمو الطفل السليم</span><span class="en">Child Growth Package</span></h3>
+        <p class="package-price"><span class="ar">٦5٠ ج.م</span><span class="en">650 EGP</span></p>
+        <ul class="package-features">
+          <li><span class="ar">تحليل فقر الدم وأنيميا نقص الحديد</span><span class="en">Anemia & Iron Deficiency</span></li>
+          <li><span class="ar">تحليل الكالسيوم ومعدلات النمو</span><span class="en">Calcium & Growth Metrics</span></li>
+          <li><span class="ar">تحليل فصيلة الدم والتحقق العام</span><span class="en">Blood Grouping & General Check</span></li>
+        </ul>
+        <a href="#home-visit" class="btn btn-secondary" style="width:100%"><span class="ar">احجز الباقة الآن</span><span class="en">Book Package</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================
+     SMART TESTS DIRECTORY SECTION
+     =================================================== -->
+<section id="directory" class="section-padding">
+  <div class="container">
+    <div class="section-header text-center reveal">
+      <span class="section-badge">
+        <span class="ar">الموسوعة الطبية المبسطة</span>
+        <span class="en">Medical Test Directory</span>
+      </span>
+      <h2 class="section-title">
+        <span class="ar">دليل أشهر التحاليل وأعراضها</span>
+        <span class="en">Common Tests, Symptoms & Conditions</span>
+      </h2>
+      <p class="section-subtitle">
+        <span class="ar">اكتشف نوع التحليل المناسب للأعراض التي تشعر بها، وتعرف على الشروط المطلوبة قبل سحب العينة لضمان دقة النتيجة.</span>
+        <span class="en">Find the right test for your symptoms and learn the necessary pre-test requirements to ensure flawless results.</span>
+      </p>
+    </div>
+
+    <div class="directory-grid">
+      <div class="directory-card reveal rd1">
+        <div class="dir-test-header">
+          <h3 class="dir-test-title"><span class="ar">صورة الدم الكاملة</span><span class="en">Complete Blood Count</span></h3>
+          <span class="dir-test-code">CBC</span>
+        </div>
+        <div class="dir-meta-block">
+          <h4 class="dir-meta-label"><span class="ar">أعراض تستدعي الفحص:</span><span class="en">When to test?</span></h4>
+          <p class="dir-meta-desc"><span class="ar">الخمول والكسل المستمر، الدوخة، شحوب البشرة، وضيق التنفس عند بذل أي مجهود بسيط.</span><span class="en">Chronic fatigue, dizziness, pale skin, cold hands, or weakness.</span></p>
+        </div>
+        <div class="dir-meta-block">
+          <div class="dir-condition-box">
+            <h4 class="dir-meta-label"><span class="ar">شروط التحليل:</span><span class="en">Preparation:</span></h4>
+            <p class="dir-meta-desc"><span class="ar">لا يشترط الصيام. يمكن إجراؤه في أي وقت على مدار اليوم.</span><span class="en">No fasting required. Can be done at any time of the day.</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="directory-card reveal rd2">
+        <div class="dir-test-header">
+          <h3 class="dir-test-title"><span class="ar">السكر التراكمي والصائم</span><span class="en">Diabetes & HbA1c</span></h3>
+          <span class="dir-test-code">GLUCOSE / HBA1C</span>
+        </div>
+        <div class="dir-meta-block">
+          <h4 class="dir-meta-label"><span class="ar">أعراض تستدعي الفحص:</span><span class="en">When to test?</span></h4>
+          <p class="dir-meta-desc"><span class="ar">العطش الشديد المفاجئ، كثرة التبول وخصوصاً ليلاً، وفقدان الوزن أو زيادته بشكل غير مبرر.</span><span class="en">Excessive thirst, frequent urination, blurred vision, or unexplained weight changes.</span></p>
+        </div>
+        <div class="dir-meta-block">
+          <div class="dir-condition-box warning">
+            <h4 class="dir-meta-label"><span class="ar">شروط حاسمة:</span><span class="en">Critical Rules:</span></h4>
+            <p class="dir-meta-desc"><span class="ar">السكر الصائم يتطلب صيام ٦ - ٨ ساعات. التراكمي (HbA1c) لا يشترط له الصيام نهائياً.</span><span class="en">Fasting Sugar requires 6-8 hours of fasting. HbA1c requires no fasting at all.</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="directory-card reveal rd3">
+        <div class="dir-test-header">
+          <h3 class="dir-test-title"><span class="ar">كوليسترول و دهون كاملة</span><span class="en">Lipid Profile</span></h3>
+          <span class="dir-test-code">CHOLESTEROL</span>
+        </div>
+        <div class="dir-meta-block">
+          <h4 class="dir-meta-label"><span class="ar">أعراض تستدعي الفحص:</span><span class="en">When to test?</span></h4>
+          <p class="dir-meta-desc"><span class="ar">وجود تاريخ عائلي مع أمراض القلب أو الضغط، الوزن الزائد، أو التدخين ونمط الحياة قليل الحركة.</span><span class="en">Family history of heart disease, high blood pressure, or general obesity.</span></p>
+        </div>
+        <div class="dir-meta-block">
+          <div class="dir-condition-box warning">
+            <h4 class="dir-meta-label"><span class="ar">شروط حاسمة:</span><span class="en">Critical Rules:</span></h4>
+            <p class="dir-meta-desc"><span class="ar">يشترط صيام تام من ١٠ إلى ١٢ ساعة قبل سحب العينة (يسمح بشرب الماء الصافي فقط).</span><span class="en">Strictly requires 10-12 hours of fasting (only plain water is allowed).</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================
+     HOME VISIT SECTION
+     =================================================== -->
+<section id="home-visit" class="section-padding">
+  <div class="container">
+    <div class="visit-wrapper">
+      <div class="visit-info reveal">
+        <span class="section-badge">
+          <span class="ar">راحة تامة</span>
+          <span class="en">Ultimate Comfort</span>
+        </span>
+        <h2 class="section-title">
+          <span class="ar">سحب العينات من منزلك.. مجاناً بالكامل</span>
+          <span class="en">Home Sample Collection.. 100% Free</span>
+        </h2>
+        <p class="section-subtitle" style="margin-bottom: 2rem; text-align: right;">
+          <span class="ar">لا داعي للنزول أو الانتظار، طاقمنا الطبي المدرب يصلك لباب البيت لسحب العينات بأمان وتعقيم كامل، والنتائج تصلك رقمياً فور صدورها.</span>
+          <span class="en">No need to go out or wait, our trained medical staff reaches your doorstep for safe and sterile collection. Results sent digitally as soon as they are ready.</span>
+        </p>
+
+        <div class="info-item">
+          <div class="info-icon">✓</div>
+          <div class="info-text">
+            <strong><span class="ar">بدون أي رسوم إضافية</span><span class="en">No Additional Fees</span></strong>
+            <p><span class="ar">خدمة السحب المنزلي مجانية بالكامل داخل نطاق تغطيتنا.</span><span class="en">Home extraction service is entirely free within our coverage areas.</span></p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">📱</div>
+          <div class="info-text">
+            <strong><span class="ar">أرسل الروشتة مباشرة</span><span class="en">Send Prescription Directly</span></strong>
+            <p><span class="ar">بدل البحث، صور الروشتة واطلب تسعيرها عبر الواتساب فوراً.</span><span class="en">Instead of searching, snap the prescription and get pricing via WhatsApp instantly.</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="visit-card-form reveal rd1">
+        <form id="labVisitForm">
+          <div class="form-group">
+            <label class="form-label">
+              <span class="ar">الاسم الكريم</span><span class="en">Full Name</span>
+            </label>
+            <input type="text" id="patientName" class="form-control" required placeholder="محمد أحمد...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">
+              <span class="ar">رقم الهاتف للتواصل</span><span class="en">Phone Number</span>
+            </label>
+            <input type="tel" id="patientPhone" class="form-control" required placeholder="01xxxxxxxxx">
+          </div>
+          <div class="form-group">
+            <label class="form-label">
+              <span class="ar">العنوان الحالي بالتفصيل</span><span class="en">Home Address</span>
+            </label>
+            <input type="text" id="patientAddress" class="form-control" required placeholder="المنطقة، الشارع، الطابق...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">
+              <span class="ar">الباقة المطلوبة أو نوع التحليل</span><span class="en">Select Package / Test</span>
+            </label>
+            <input type="text" id="testType" class="form-control" placeholder="مثال: باقة الاطمئنان الشامل أو روشتة طبيب">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+            <span class="ar">تأكيد طلب الزيارة المنزلية</span>
+            <span class="en">Confirm Home Visit Request</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================
+     INFINITE TICKER MARQUEE SECTION
+     =================================================== -->
+<section id="insurances">
+  <div class="marquee-container">
+    <div class="marquee-track">
+      <div class="logo-item">
+        <svg class="logo-icon-svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 12 10 10-4.48 10-12S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+        <span>AXA INSURANCE</span>
+      </div>
+      <div class="logo-item">
+        <svg class="logo-icon-svg" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 3.99L19.53 19H4.47L12 5.99zM13 16h-2v2h2v-2zm0-6h-2v4h2V10z"/></svg>
+        <span>METLIFE</span>
+      </div>
+      <div class="logo-item">
+        <svg class="logo-icon-svg" viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 4l7.53 13H4.47L12 6zm-1 4v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
+        <span class="ar">نقابة المهندسين</span><span class="en">Engineers Syndicate</span>
+      </div>
+      <div class="logo-item">
+        <svg class="logo-icon-svg" viewBox="0 0 24 24"><path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm15 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zM12 2C6.48 2 2 6.48 2 12s4.48 10 12 10 10-4.48 10-12S17.52 2 12 2zm1 15.92c-3.13-.47-5.5-3.15-5.5-6.42 0-3.59 2.85-6.5 6.41-6.5 3.56 0 6.41 2.91 6.41 6.5 0 3.27-2.37 5.95-5.5 6.42v3.08h-1.82v-3.08z"/></svg>
+        <span class="ar">نقابة الأطباء</span><span class="en">Medical Syndicate</span>
+      </div>
+
+      <!-- نسخة التكرار للحركة المستمرة -->
+      <div class="logo-item">
+        <svg class="logo-icon-svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 12 10 10-4.48 10-12S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+        <span>AXA INSURANCE</span>
+      </div>
+      <div class="logo-item">
+        <svg class="logo-icon-svg" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 3.99L19.53 19H4.47L12 5.99zM13 16h-2v2h2v-2zm0-6h-2v4h2V10z"/></svg>
+        <span>METLIFE</span>
+      </div>
+      <div class="logo-item">
+        <svg class="logo-icon-svg" viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 4l7.53 13H4.47L12 6zm-1 4v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
+        <span class="ar">نقابة المهندسين</span><span class="en">Engineers Syndicate</span>
+      </div>
+      <div class="logo-item">
+        <svg class="logo-icon-svg" viewBox="0 0 24 24"><path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm15 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zM12 2C6.48 2 2 6.48 2 12s4.48 10 12 10 10-4.48 10-12S17.52 2 12 2zm1 15.92c-3.13-.47-5.5-3.15-5.5-6.42 0-3.59 2.85-6.5 6.41-6.5 3.56 0 6.41 2.91 6.41 6.5 0 3.27-2.37 5.95-5.5 6.42v3.08h-1.82v-3.08z"/></svg>
+        <span class="ar">نقابة الأطباء</span><span class="en">Medical Syndicate</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================
+     قالب مستند الـ PDF الفاخر والمخفي تماماً عن شاشة العميل
+     =================================================== -->
+<div id="pdf-invoice-template" style="position: absolute; left: -9999px; top: -9999px; width: 210mm; padding: 25mm 20mm; background: #ffffff; color: #0f172a; font-family: 'Cairo', sans-serif;">
+  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00D2C4; padding-bottom: 15px; margin-bottom: 30px;">
+    <div>
+      <h1 style="font-size: 2.2rem; font-weight: 900; color: #0B192C; margin-bottom: 5px;">لايف لاب | LifeLab</h1>
+      <p style="font-size: 0.95rem; color: #64748B;">مختبرات الرعاية الطبية الفاخرة والذكية</p>
+    </div>
+    <div style="text-align: right;">
+      <p style="font-size: 1.1rem; font-weight: 700; color: #00D2C4;">مستند رسمي معتمد</p>
+      <p style="font-size: 0.85rem; color: #64748B;">Official Price Directory</p>
+    </div>
+  </div>
+
+  <div style="background: #F8FAFC; border: 1px dashed #00D2C4; padding: 15px 20px; border-radius: 6px; margin-bottom: 35px; text-align: center;">
+    <h3 style="font-size: 1.25rem; font-weight: 700; color: #0B192C; margin-bottom: 5px;">⚠️ وثيقة تأكيد صلاحية الأسعار اليومية</h3>
+    <p style="font-size: 1.05rem; color: #1E2E44; font-weight: 600;">نؤكد أن كافة الأسعار المذكورة أدناه معتمدة وصالحة بنسبة 100% بتاريخ اليوم وقت التحميل:</p>
+    <p style="font-size: 1.2rem; color: #00D2C4; font-weight: 900; margin-top: 10px;" id="pdf-live-date-ar"></p>
+    <p style="font-size: 0.95rem; color: #64748B; font-style: italic; margin-top: 4px;" id="pdf-live-date-en"></p>
+  </div>
+
+  <!-- جدول عرض الأسعار الفاخر -->
+  <table style="width: 100%; border-collapse: collapse; margin-bottom: 40px;">
+    <thead>
+      <tr style="background: #0B192C; color: #ffffff;">
+        <th style="padding: 12px 15px; text-align: right; border-radius: 4px 0 0 4px;">اسم الباقة الطبية / Package Name</th>
+        <th style="padding: 12px 15px; text-align: center;">المكونات وفحوصات الدم</th>
+        <th style="padding: 12px 15px; text-align: left; border-radius: 0 4px 4px 0; width: 40mm;">السعر / Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E2E8F0;">
+        <td style="padding: 15px; text-align: right;">
+          <strong style="color: #0B192C; display:block;">باقة الاطمئنان الشامل</strong>
+          <span style="font-size:0.85rem; color:#64748B;">Executive Check-up</span>
+        </td>
+        <td style="padding: 15px; font-size: 0.9rem; color: #475569; text-align: center;">CBC + Liver & Kidney + HbA1c + Lipids</td>
+        <td style="padding: 15px; text-align: left; font-weight: bold; color: #0B192C;">990 EGP / ٩٩٠ ج.م</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E2E8F0; background: #F8FAFC;">
+        <td style="padding: 15px; text-align: right;">
+          <strong style="color: #0B192C; display:block;">باقة صحة المرأة المتكاملة</strong>
+          <span style="font-size:0.85rem; color:#64748B;">Women's Health</span>
+        </td>
+        <td style="padding: 15px; font-size: 0.9rem; color: #475569; text-align: center;">Executive Panel + TSH + Vitamin D + Ferritin</td>
+        <td style="padding: 15px; text-align: left; font-weight: bold; color: #0B192C;">1,450 EGP / ١,٤٥٠ ج.م</td>
+      </tr>
+      <tr style="border-bottom: 2px solid #00D2C4;">
+        <td style="padding: 15px; text-align: right;">
+          <strong style="color: #0B192C; display:block;">باقة نمو الطفل السليم</strong>
+          <span style="font-size:0.85rem; color:#64748B;">Child Growth Package</span>
+        </td>
+        <td style="padding: 15px; font-size: 0.9rem; color: #475569; text-align: center;">Anemia Panels + Iron + Calcium + Blood Group</td>
+        <td style="padding: 15px; text-align: left; font-weight: bold; color: #0B192C;">650 EGP / ٦٥٠ ج.م</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 50px; border-top: 1px dashed #E2E8F0; padding-top: 20px; display: flex; justify-content: space-between; font-size: 0.85rem; color: #64748B;">
+    <div>* خدمة سحب العينات المنزلية مجانية بالكامل لجميع الباقات المذكورة.</div>
+    <div style="text-align: right;">مختبرات لايف لاب المعتمدة لعام ٢٠٢٦</div>
+  </div>
+</div>
+
+<!-- ===================================================
+     FOOTER
+     =================================================== -->
+<footer>
+  <div class="container">
+    <p>
+      <span class="ar">جميع الحقوق محفوظة © ٢٠٢٦ <strong>مختبرات لايف لاب</strong></span>
+      <span class="en">All Rights Reserved © 2026 <strong>LifeLab Laboratories</strong></span>
+    </p>
+  </div>
+</footer>
+
+<!-- استدعاء سكريبت الحزم العالمي لإصدار ومزامنة ملفات الـ PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script>
+/* =====================================================
+   LANGUAGE SWITCHER INTERACTION LOGIC
+   ===================================================== */
+const langBtn = document.getElementById('lang-btn');
+langBtn.addEventListener('click', () => {
+  const currentLang = document.body.getAttribute('data-lang');
+  if (currentLang === 'en') {
+    document.body.setAttribute('data-lang', 'ar');
+    langBtn.textContent = 'English';
+  } else {
+    document.body.setAttribute('data-lang', 'en');
+    langBtn.textContent = 'عربي';
+  }
+});
+
+/* =====================================================
+   DYNAMIC DYNAMIC PDF GENERATION SCRIPT (حركية طباعة الأسعار بالتاريخ الحالي)
+   ===================================================== */
+document.getElementById('pdf-btn').addEventListener('click', () => {
+  const today = new Date();
+  
+  // صياغة وعرض التواريخ بالصيغ الرسمية الفاخرة للبلدين
+  const optionsAr = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+  const optionsEn = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+  
+  const liveDateAr = today.toLocaleDateString('ar-EG', optionsAr);
+  const liveDateEn = `Downloaded on: ${today.toLocaleDateString('en-US', optionsEn)}`;
+  
+  document.getElementById('pdf-live-date-ar').innerText = liveDateAr;
+  document.getElementById('pdf-live-date-en').innerText = liveDateEn;
+
+  // استهداف قالب الطباعة وضبط خيارات التصدير والمحاذاة
+  const element = document.getElementById('pdf-invoice-template');
+  
+  const opt = {
+    margin:       10,
+    filename:     `LifeLab-Prices-${today.toISOString().split('T')[0]}.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  
+  // تشغيل المحرك وحفظ المستند لجهاز المريض فوراُ
+  html2pdf().set(opt).from(element).save();
+});
+
+/* =====================================================
+   SCROLL REVEAL (IntersectionObserver Setup)
+   ==================================================== */
+const observer = new IntersectionObserver((entries) => {
+  for (const e of entries) {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  }
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* =====================================================
+   FORM SUBMISSION Sync Handler PLACEHOLDER
+   ===================================================== */
+document.getElementById('labVisitForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const isAr = document.body.getAttribute('data-lang') === 'ar';
+  alert(isAr ? 'تم استلام طلبك بنجاح! سيتواصل معك طاقم لايف لاب الطبي لتأكيد الموعد.' : 'Request received successfully! Our medical team will contact you shortly.');
+});
+</script>
+</body>
+</html>
